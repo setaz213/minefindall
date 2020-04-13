@@ -25,7 +25,7 @@ longpoll = VkBotLongPoll(vk_session, 194162460)
 vk = vk_session.get_api()
 
 def conn():
-	con = pymysql.connect('localhost', 'root', '', 'minecraft',cursorclass=pymysql.cursors.DictCursor)
+	con = pymysql.connect('https://node83621-minefindall.mircloud.ru', 'root', 'MCAaao53031', 'minecraft',cursorclass=pymysql.cursors.DictCursor)
 	return con
 
 def message_send(message,user_id,keyb=None,att=None):

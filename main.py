@@ -325,6 +325,17 @@ def reg_dop(id,Nickname,Years,TypeGame,Version,License,Data,Avatar):
 			print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 		except Exception as err:
 			print(f"{id}_thread ошибка: {err}")
+def checkNickname(nickname):
+	con = conn()
+	with con:
+		cur = con.cursor()
+		cur.execute('SELECT * FROM `users` WHERE `nickname`=%s',nickname)
+		answer = cur.fetchone()
+		if answer:
+			return False
+		else:
+			return True
+
 def registration(id):
 	print(getCurrentTime(),f' Процесс reg_{id}_thread запущен!\n')
 
@@ -367,48 +378,51 @@ def registration(id):
 																if event.type == VkBotEventType.MESSAGE_NEW:
 																	if event.object.peer_id == event.object.from_id and event.object.from_id == id:
 																		message = event.object.text
-																		Nickname = message
-																		Avatar = 'photo-194162460_457239023_43a0ccdc7c28ab2806'
-																		if License == 'True':
-																			Avatar = helper.AMain(Nickname)
-																		message_send('Никнейм установлен!',id)
-																		message_send('Какой твой возраст?',id)
-																		while True:
-																			try:
-																				for event in longpoll.listen():
-																					if event.type == VkBotEventType.MESSAGE_NEW:
-																						if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-																							user_id = event.object.from_id
-																							message = event.object.text
-																							try:
-																								Years = int(message)
-																								if Years < 5 or Years > 100:
-																									raise TypeError
-																								message_send('Расскажи о себе',id)
-																								while True:
-																									try:
-																										for event in longpoll.listen():
-																											if event.type == VkBotEventType.MESSAGE_NEW:
-																												if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-																													user_id = event.object.from_id
-																													message = event.object.text
-																													if len(message) < 5 or len(message) > 100:
-																														message_send('Должно быть меньше 100 символов, но больше 5',id)
-																													else:
-																														Data = message
-																														reg_dop(id,Nickname,Years,TypeGame,Version,License,Data,Avatar)
-																														
-																									except requests.ReadTimeout as err:
-																										print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-																									except Exception as err:
-																										print(f"{id}_thread ошибка: {err}")
-																							except:
-																								message_send('Неверный возраст(',id)	
-																			except requests.ReadTimeout as err:
-																				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-																			except Exception as err:
-																				print(f"{id}_thread ошибка: {err}")
-																			
+																		if checkNickname(message):
+																			Nickname = message
+																			Avatar = 'photo-194162460_457239023_43a0ccdc7c28ab2806'
+																			if License == 'True':
+																				Avatar = helper.AMain(Nickname)
+																				message_send('Лицензионный аватар установлен!',id)
+																			message_send('Какой твой возраст?',id)
+																			while True:
+																				try:
+																					for event in longpoll.listen():
+																						if event.type == VkBotEventType.MESSAGE_NEW:
+																							if event.object.peer_id == event.object.from_id and event.object.from_id == id:
+																								user_id = event.object.from_id
+																								message = event.object.text
+																								try:
+																									Years = int(message)
+																									if Years < 5 or Years > 100:
+																										raise TypeError
+																									message_send('Расскажи о себе',id)
+																									while True:
+																										try:
+																											for event in longpoll.listen():
+																												if event.type == VkBotEventType.MESSAGE_NEW:
+																													if event.object.peer_id == event.object.from_id and event.object.from_id == id:
+																														user_id = event.object.from_id
+																														message = event.object.text
+																														if len(message) < 5 or len(message) > 100:
+																															message_send('Должно быть меньше 100 символов, но больше 5',id)
+																														else:
+																															Data = message
+																															reg_dop(id,Nickname,Years,TypeGame,Version,License,Data,Avatar)
+																															
+																										except requests.ReadTimeout as err:
+																											print(f"{id}_thread: Привышено время ожидания от сервера!\n")
+																										except Exception as err:
+																											print(f"{id}_thread ошибка: {err}")
+																								except:
+																									message_send('Неверный возраст(',id)	
+																				except requests.ReadTimeout as err:
+																					print(f"{id}_thread: Привышено время ожидания от сервера!\n")
+																				except Exception as err:
+																					print(f"{id}_thread ошибка: {err}")
+																		else:
+																			message_send('Никнейм зарегистрирован!',id)
+
 														except requests.ReadTimeout as err:
 															print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 														except Exception as err:

@@ -454,7 +454,7 @@ def checkuser(ids_active):
 								user_id = event.object.from_id
 								print(getCurrentTime(),f' {event.object.from_id} не зарегистрирован!')
 								ids_active.append(event.object.from_id)
-								message_send('Привет! Ты не зарегистрирован, давай исправим это &#128513;',id)
+								message_send('Привет! Ты не зарегистрирован, давай исправим это &#128513;',user_id)
 								print(getCurrentTime(),f' Процесс reg_{event.object.from_id}_thread запускается....')
 								exec(f'thread_{str(event.object.from_id)}_reg = her.Thread(target=registration, args=(user_id,))')
 								exec(f'thread_{str(event.object.from_id)}_reg.start()')

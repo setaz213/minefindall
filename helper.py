@@ -39,13 +39,13 @@ def VkUploadImage(url):
 	from vk_api.upload import VkUpload
 	from vk_api.utils import get_random_id
 	import requests
+	from io import BytesIO
 	vk_session = VkApi(token='bb29f6d92918066c73dbe77e6b91e4e2acb03400e26da4ac6ea3ebdf04976b500fdaf7e22807b6048b7f6')
 	vk = vk_session.get_api()
 	upload = VkUpload(vk)
 	img = requests.get(url).content
-	with open('last_img.png','wb') as f:
-		f.write(img)
-	response = upload.photo_messages(open('last_img.png','r'))[0]
+	f = BytesIO(img)
+	response = upload.photo_messages(f)[0]
 	owner_id = response['owner_id']
 	photo_id = response['id']
 	access_key = response['access_key']

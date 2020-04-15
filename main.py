@@ -25,12 +25,13 @@ longpoll = VkBotLongPoll(vk_session, 194162460)
 vk = vk_session.get_api()
 
 def conn():
-	con = pymysql.connect('node83621-minefindall.mircloud.ru', 'root', 'MCAaao53031', 'minecraft',cursorclass=pymysql.cursors.DictCursor)
+	con = pymysql.connect('localhost', 'root', '', 'minecraft',cursorclass=pymysql.cursors.DictCursor)
 	return con
 
 def message_send(message,user_id,keyb=None,att=None):
 	try:
-		vk.messages.send(random_id=0,peer_id = user_id,message=message,keyboard=keyb,attachment=att)
+		itog = vk.messages.send(random_id=0,peer_id = user_id,message=message,keyboard=keyb,attachment=att)
+		return itog
 	except Exception as err:
 		print(getCurrentTime(),' message_send error:',err)
 
@@ -57,6 +58,8 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 								else:
+									if int(message) < 5 or int(message) > 70:
+										raise TypeError
 									WantWozrast = int(message)
 									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
@@ -194,7 +197,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							else:
-								message_send('Что-то введено не так! Используйте клавиатуру!',KLic)
+								message_send('Что-то введено не так! Используйте клавиатуру!',id,KLic)
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 			except Exception as err:
@@ -235,96 +238,39 @@ def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 								about = daat['data']
 								avatar = daat['avatar']
 								pol = daat['pol']
+								n = years
+								Ytext = ("год" if (11 <= n <= 19 or n % 10 == 1) else
+							          "года" if 2 <= n % 10 <= 4 else
+							          "лет")
+								if 10 <= n <= 20:
+									Ytext = 'лет'
 								discord = daat['discord']
-								
+								pol2 = pol
 								if pol == 'Мужской':
-									pol = '&#128104;'
+									pol = '&#128697;'
 								else:
-									pol = '&#128105;'
+									pol = '&#128698;'
 
-							data_send = f'{pol} ID = {user_id}\nНикнейм: {nickname}\nВозраст - {years}\nИгра - {typegame} {versiongame}\nЛицензия - {license}\nО себе:\n"{about}"\nDiscord: {discord}'
+							data_send = f'{pol} Пол: {pol2}\n&#128101; Никнейм: [id{user_id}|{nickname}]\n&#128286; Возраст - {years} {Ytext}\n\n&#127918; Игра - {typegame} {versiongame}\n&#9989; Лицензия - {license}\n\n&#128222; Discord: {discord}\n&#9997; О себе:\n    "{about}"'
 							message_send(data_send,id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast),att=avatar)
-						elif 'возраст' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('возраст',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-						elif 'пол' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('пол',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-						elif 'тип игры' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('тип игры',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-						elif 'версия' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('версия',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-						elif 'discord' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('discord',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-						elif 'лицензия' in message:
-							WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf('лицензия',id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
+						
+
+						else:
+							for command in ['возраст','пол','тип игры','версия','discord','лицензия']:
+								if command in message:
+									WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf(command,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
+									break
+							deletem = message_send('&#13;',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+							vk.messages.delete(message_ids=deletem,delete_for_all=1)
+							break
+							
+
 		except requests.ReadTimeout as err:
 			print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 		except Exception as err:
 			print(f"{id}_thread ошибка: {err}")
 			continue
 
-def checkLicense(id):
-	KHaveLic = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Да","payload":""},"color":"positive"},{"action":{"type":"text","label":"Нет","payload":""},"color":"negative"}]]})
-	message_send('Так... У тебя есть лицензия Minecraft: Java Edition?',id,KHaveLic)
-	while True:
-		try:
-			for event in longpoll.listen():
-				if event.type == VkBotEventType.MESSAGE_NEW:
-					if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-						user_id = event.object.from_id
-						message = event.object.text.lower()
-						if message == 'да':
-							return True
-						elif message == 'нет':
-							return False
-						else:
-							message_send('Ответ непонятен!',id,KHaveLic)
-							
-		except requests.ReadTimeout as err:
-			print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-		except Exception as err:
-			print(f"{id}_thread ошибка: {err}")
-
-def reg_dop(id,Nickname,Years,TypeGame,Version,License,Data,Avatar):
-	KDiscord = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Секрет","payload":""},"color":"negative"},{"action":{"type":"text","label":"Отсутствует","payload":""},"color":"negative"}]]})
-	message_send('Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
-	while True:
-		try:
-			for event in longpoll.listen():
-				if event.type == VkBotEventType.MESSAGE_NEW:
-					if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-						user_id = event.object.from_id
-						message = event.object.text
-						if '#' in message or (message == 'Секрет' or message == 'Отсутствует'):
-							Discord = message
-							KPol = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Женский","payload":""},"color":"negative"},{"action":{"type":"text","label":"Мужской","payload":""},"color":"primary"}]]})
-							message_send('И на последок, какой твой пол?',id,KPol)
-							while True:
-								try:
-									for event in longpoll.listen():
-										if event.type == VkBotEventType.MESSAGE_NEW:
-											if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-												user_id = event.object.from_id
-												message = event.object.text
-												if message == 'Женский' or message=='Мужской':
-													Pol = message
-													con = conn()
-													with con:
-														cur = con.cursor()
-														cur.execute('INSERT INTO users(user_id,nickname,years,versiongame,version,license,data,avatar,discord,pol) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(id,Nickname,Years,TypeGame,Version,License,Data,Avatar,Discord,Pol))
-													message_send('Регистрация успешна!',id)
-													restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-												else:
-													message_send('Я не знаю такой пол!',id,KPol)
-								except requests.ReadTimeout as err:
-									print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-								except Exception as err:
-									print(f"{id}_thread ошибка: {err}")
-						else:
-							message_send('А после решётки?(',id,KDiscord)
-		except requests.ReadTimeout as err:
-			print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-		except Exception as err:
-			print(f"{id}_thread ошибка: {err}")
 def checkNickname(nickname):
 	con = conn()
 	with con:
@@ -336,7 +282,8 @@ def checkNickname(nickname):
 		else:
 			return True
 
-def registration(id):
+def registration(id,whereSit = 'typegame'):
+
 	print(getCurrentTime(),f' Процесс reg_{id}_thread запущен!\n')
 
 	KVersionGame = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Java Edition","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Bedrock Edition","payload":""},"color":"secondary"}]]})
@@ -346,99 +293,113 @@ def registration(id):
 			for event in longpoll.listen():
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-						message = event.object.text.lower()
-						if 'java' in message or 'bedrock' in message:
-							if 'java' in message:
-								TypeGame = 'Java Edition'
-								KVersion = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"1.15.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.14.4","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.13.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.12.2","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"1.11.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.8","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.7.10","payload":""},"color":"secondary"}]]})
-								checkVersion = helper.versionsJava
-							elif 'bedrock' in message:
-								TypeGame = 'Bedrock Edition'
-								KVersion = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"1.14","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.13","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.12","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.11","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"1.9","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.8","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.10","payload":""},"color":"secondary"}]]})
-								checkVersion = helper.versionsBedrock
+						message = event.object.text
+						KBack = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
+						if whereSit == 'typegame':
+							message = message.lower()
+							if 'java' in message or 'bedrock' in message:
+								if 'java' in message:
+									TypeGame = 'Java Edition'
+									KVersion = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"1.15.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.14.4","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.13.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.12.2","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"1.11.2","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.8","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.7.10","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
+									checkVersion = helper.versionsJava
+								elif 'bedrock' in message:
+									TypeGame = 'Bedrock Edition'
+									KVersion = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"1.14","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.13","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.12","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.11","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"1.9","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.8","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.10","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
+									checkVersion = helper.versionsBedrock
 
-							message_send('Продолжим...\nКакая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
-							while True:
-								try:
-									for event in longpoll.listen():
-										if event.type == VkBotEventType.MESSAGE_NEW:
-											if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-												message = event.object.text.lower()
-												if message in checkVersion:
-													Version = message
-													License = 'None'
-													if TypeGame == 'Java Edition':
-														if checkLicense(id):
-															License = 'True'
+								message_send('Продолжим...\nКакая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
+								whereSit = 'versiongame'
+							else:
+								message_send('Ответ не понятен! \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
+						elif whereSit == 'versiongame':
+							if message == 'Назад':
+								whereSit = 'typegame'
+								message_send('Какая у тебя версия игры? \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
+								continue
+							if message in checkVersion:
+								Version = message
+								message_send('Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
+								whereSit = 'nickname'
+							else:
+								message_send('Извини, я не знаю такую версию (PE не поддерживается!)',id,KVersion)
 
-													message_send('Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id)
-													while True:
-														try:
-															for event in longpoll.listen():
-																if event.type == VkBotEventType.MESSAGE_NEW:
-																	if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-																		message = event.object.text
-																		if checkNickname(message):
-																			Nickname = message
-																			Avatar = 'photo-194162460_457239023_43a0ccdc7c28ab2806'
-																			if License == 'True':
-																				Avatar = helper.AMain(Nickname)
-																				message_send('Лицензионный аватар установлен!',id)
-																			message_send('Какой твой возраст?',id)
-																			while True:
-																				try:
-																					for event in longpoll.listen():
-																						if event.type == VkBotEventType.MESSAGE_NEW:
-																							if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-																								user_id = event.object.from_id
-																								message = event.object.text
-																								try:
-																									Years = int(message)
-																									if Years < 5 or Years > 100:
-																										raise TypeError
-																									message_send('Расскажи о себе',id)
-																									while True:
-																										try:
-																											for event in longpoll.listen():
-																												if event.type == VkBotEventType.MESSAGE_NEW:
-																													if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-																														user_id = event.object.from_id
-																														message = event.object.text
-																														if len(message) < 5 or len(message) > 100:
-																															message_send('Должно быть меньше 100 символов, но больше 5',id)
-																														else:
-																															Data = message
-																															reg_dop(id,Nickname,Years,TypeGame,Version,License,Data,Avatar)
-																															
-																										except requests.ReadTimeout as err:
-																											print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-																										except Exception as err:
-																											print(f"{id}_thread ошибка: {err}")
-																								except:
-																									message_send('Неверный возраст(',id)	
-																				except requests.ReadTimeout as err:
-																					print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-																				except Exception as err:
-																					print(f"{id}_thread ошибка: {err}")
-																		else:
-																			message_send('Никнейм зарегистрирован!',id)
+						elif whereSit == 'nickname':
+							if message == 'Назад':
+								whereSit = 'versiongame'
+								message_send('Продолжим...\nКакая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
+								continue
+							if checkNickname(message):
+								Nickname = message
+								Avatar = 'photo-194162460_457239037_4da5d43fea5750d796'
+								if TypeGame == 'Java Edition':
+									message_send('Подожди... Проверка лицензии и загрузка аватара....',id)
+									Avatar = helper.AMain(Nickname)
+									if Avatar == 'No license':
+										message_send(f'Лицензия на никнейм <<{Nickname}>> отсутствует!',id,KBack)
+										License = 'None'
+										Avatar = 'photo-194162460_457239037_4da5d43fea5750d796'
+									else:
+										License = 'True'
+										message_send('Лицензионный аватар установлен!',id,KBack)
+								else:
+									License = 'None'
+								message_send('Какой твой возраст?',id,KBack)
+								whereSit = 'years'
+							else:
+								message_send('Никнейм зарегистрирован!',id)
+						elif whereSit == 'years':
+							if message == 'Назад':
+								whereSit = 'nickname'
+								message_send('Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
+								continue			
+							try:
+								Years = int(message)
+								if Years < 5 or Years > 60:
+									raise TypeError
+								message_send('Расскажи о себе',id,KBack)
+								whereSit = 'about'
+							except:
+								message_send('Неверный возраст(',id,KBack)
+						elif whereSit == 'about':
+							if message == 'Назад':
+								whereSit = 'years'
+								message_send('Какой твой возраст?',id,KBack)
+								continue														
+							if len(message) < 5 or len(message) > 100:
+								message_send('Должно быть меньше 100, но больше 5 символов',id,KBack)
+							else:
+								Data = message
+								KDiscord = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Секрет","payload":""},"color":"negative"},{"action":{"type":"text","label":"Отсутствует","payload":""},"color":"negative"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
+								message_send('Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
+								whereSit = 'discord'
+						elif whereSit == 'discord':
+							if message == 'Назад':
+								whereSit = 'about'
+								message_send('Расскажи о себе',id,KBack)
+								continue
+							if '#' in message or (message == 'Секрет' or message == 'Отсутствует'):
+								Discord = message
+								KPol = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Мужской","payload":""},"color":"primary"},{"action":{"type":"text","label":"Женский","payload":""},"color":"negative"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
+								message_send('И на последок, какой твой пол?',id,KPol)
+								whereSit = 'pol'
+							else:
+								message_send('А после решётки?(',id,KDiscord)
+						elif whereSit == 'pol':
+							if message == 'Назад':
+								whereSit = 'discord'
+								message_send('Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
+								continue
+							if message == 'Женский' or message=='Мужской':
+								Pol = message
+								con = conn()
+								with con:
+									cur = con.cursor()
+									cur.execute('INSERT INTO users(user_id,nickname,years,versiongame,version,license,data,avatar,discord,pol) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(id,Nickname,Years,TypeGame,Version,License,Data,Avatar,Discord,Pol))
+								message_send('Регистрация успешна!',id)
+								restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
+							else:
+								message_send('Я не знаю такой пол!',id,KPol)
 
-														except requests.ReadTimeout as err:
-															print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-														except Exception as err:
-															print(f"{id}_thread ошибка: {err}")
-
-												else:
-													message_send('Извини, я не знаю такую версию (PE не поддерживается!)',id,KVersion)
-
-								except requests.ReadTimeout as err:
-									print(f"reg{id}_thread: Привышено время ожидания от сервера!\n")
-								except Exception as err:
-									print(f"reg{id}_thread ошибка: {err}")
-
-						else:
-							message_send('Ответ не понятен! \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
-							
 		except requests.ReadTimeout as err:
 			print(f"reg{id}_thread: Привышено время ожидания от сервера!\n")
 		except Exception as err:

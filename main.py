@@ -8,6 +8,7 @@ import threading as her
 import json
 import helper
 import re
+import random
 
 def getCurrentTime():
 	t = time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())
@@ -180,36 +181,72 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 				print(f"{id}_thread ошибка: {err}")
 	elif 'лицензия' in types:
 		KLic = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Всё равно","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Есть","payload":""},"color":"positive"}]]})
-		message_send('Выберите наличие лицензии',id,KLic)
-		while True:
-			try:
-				for event in longpoll.listen():
-					if event.type == VkBotEventType.MESSAGE_NEW:
-						if event.object.peer_id == event.object.from_id and event.object.from_id == id:
-							user_id = event.object.from_id
-							message = event.object.text.lower()
-							if message == 'всё равно':
-								WantLicense = 'всё равно'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
-								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
-							elif message == 'есть':
-								WantLicense = 'есть'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
-								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
-							else:
-								message_send('Что-то введено не так! Используйте клавиатуру!',id,KLic)
-			except requests.ReadTimeout as err:
-				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
-			except Exception as err:
-				print(f"{id}_thread ошибка: {err}")
-		
+		if WantType == 'Java Edition':
+			message_send('Выберите наличие лицензии',id,KLic)
+			while True:
+				try:
+					for event in longpoll.listen():
+						if event.type == VkBotEventType.MESSAGE_NEW:
+							if event.object.peer_id == event.object.from_id and event.object.from_id == id:
+								user_id = event.object.from_id
+								message = event.object.text.lower()
+								if message == 'всё равно':
+									WantLicense = 'всё равно'
+									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
+								elif message == 'есть':
+									WantLicense = 'есть'
+									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
+								else:
+									message_send('Что-то введено не так! Используйте клавиатуру!',id,KLic)
+				except requests.ReadTimeout as err:
+					print(f"{id}_thread: Привышено время ожидания от сервера!\n")
+				except Exception as err:
+					print(f"{id}_thread ошибка: {err}")
+		else:
+			message_send('Тип игры должен быть Java Edition!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+			return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 WantLicense = 'всё равно'
 WantWozrast = 'любой'
 WantPol = 'любой'
 WantType = 'любой'
 WantDiscord = 'всё равно'
 WantVersion = 'любая'
+
+def getUsers(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast):
+	zapros = f'SELECT * FROM `users` WHERE `user_id` != {id} '
+	if WantDiscord == 'есть':
+		zapros += "AND `discord` != 'Отсутствует' AND `discord` != 'Секрет' "
+	if WantLicense == 'есть':
+		zapros += "AND `license` = 'True' "
+	if WantPol == 'женский':
+		zapros += "AND `pol` = 'Женский' "
+	elif WantPol == 'мужской':
+		zapros += "AND `pol` = 'Мужской' "
+	if WantType == 'Java Edition':
+		zapros += "AND `versiongame` = 'Java Edition' "
+	elif WantType == 'Bedrock Edition':
+		zapros += "AND `versiongame` = 'Bedrock Edition' "
+	if WantVersion != 'любая':
+		zapros += f"AND `version` = '{WantVersion}' "
+	if WantWozrast != 'любой':
+		zapros += f"AND `years` = {WantWozrast}"
+	con = conn()
+	with con:
+		cur = con.cursor()
+		cur.execute(zapros)
+		last_users = cur.fetchall()
+		if not last_users:
+			return 'None'
+		return last_users
+
 def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast):
+	con = conn()
+	with con:
+		cur = con.cursor()
+		cur.execute(f'SELECT * FROM `users` WHERE `user_id`!={id}')
+		last_users = cur.fetchall()
 	print(getCurrentTime(),f' Процесс {id}_thread запущен!\n')
 	message_send('Привет! Давай начнём!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 	while True:
@@ -253,16 +290,59 @@ def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 
 							data_send = f'{pol} Пол: {pol2}\n&#128101; Никнейм: [id{user_id}|{nickname}]\n&#128286; Возраст - {years} {Ytext}\n\n&#127918; Игра - {typegame} {versiongame}\n&#9989; Лицензия - {license}\n\n&#128222; Discord: {discord}\n&#9997; О себе:\n    "{about}"'
 							message_send(data_send,id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast),att=avatar)
-						
+						elif 'далее' in message:
+							if last_users == 'None':
+								message_send('Под данные характеристики никто не подходит',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								continue
+							if not last_users:
+								message_send('Больше не осталось людей под данные характеристики, но ты можешь обнулить просмотры!',id,json.dumps({"buttons":[[{"action":{"type":"text","label":"Обнулить","payload":""},"color":"positive"}]],"inline":true}))
+								deletem = message_send('&#13;',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								vk.messages.delete(message_ids=deletem,delete_for_all=1)
+								continue
+							random_user = last_users[random.randint(0,len(last_users)-1)]
+							last_users.remove(random_user)
+							Ruser_id = random_user['user_id']
+							Rnickname = random_user['nickname']
+							Ryears = random_user['years']
+							Rtypegame = random_user['versiongame']
+							Rversiongame = random_user['version']
+							Rlicense = random_user['license']
+							if Rlicense == 'True':
+								Rlicense = 'Есть'
+							else:
+								Rlicense = 'Отсутствует'
+							Rabout = random_user['data']
+							Ravatar = random_user['avatar']
+							Rpol = random_user['pol']
+							Rn = Ryears
+							RYtext = ("год" if (11 <= Rn <= 19 or Rn % 10 == 1) else
+						          "года" if 2 <= Rn % 10 <= 4 else
+						          "лет")
+							if 10 <= Rn <= 20:
+								RYtext = 'лет'
+							Rdiscord = random_user['discord']
+							Rpol2 = Rpol
+							if Rpol == 'Мужской':
+								Rpol = '&#128697;'
+							else:
+								Rpol = '&#128698;'
 
+							data_send = f'{Rpol} Пол: {Rpol2}\n&#128101; Никнейм: [id{Ruser_id}|{Rnickname}]\n&#128286; Возраст - {Ryears} {RYtext}\n\n&#127918; Игра - {Rtypegame} {Rversiongame}\n&#9989; Лицензия - {Rlicense}\n\n&#128222; Discord: {Rdiscord}\n&#9997; О себе:\n    "{Rabout}"'
+							message_send(data_send,id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast),att=Ravatar)
+
+						elif 'обнулить' in message:
+							last_users = getUsers(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
+							message_send('Ты обнулил список просмотренных пользователей!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 						else:
 							for command in ['возраст','пол','тип игры','версия','discord','лицензия']:
 								if command in message:
 									WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast = editConf(command,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
+									last_users = getUsers(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 									break
+								else:
+									continue
 							deletem = message_send('&#13;',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 							vk.messages.delete(message_ids=deletem,delete_for_all=1)
-							break
 							
 
 		except requests.ReadTimeout as err:

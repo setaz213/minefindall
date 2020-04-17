@@ -44,7 +44,7 @@ def keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast):
 def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast):
 	if 'возраст' in types:
 		KVozr = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Любой","payload":""},"color":"secondary"}]]})
-		message_send('Введите точный возраст',id,KVozr)
+		message_send('&#128286; Введи точный возраст',id,KVozr)
 		while True:
 			try:
 				for event in longpoll.listen():
@@ -56,16 +56,16 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 							try:
 								if message == 'любой':
 									WantWozrast = 'любой'
-									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 								else:
 									if int(message) < 5 or int(message) > 70:
 										raise TypeError
 									WantWozrast = int(message)
-									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							except Exception as e:
-								message_send('Ошибка!',id,KVozr)
+								message_send('&#9888; Ошибка!',id,KVozr)
 
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
@@ -74,7 +74,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 
 	elif 'пол' in types:
 		KPol = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Любой","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"Мужской","payload":""},"color":"primary"},{"action":{"type":"text","label":"Женский","payload":""},"color":"negative"}]]})
-		message_send('Выберите пол',id,KPol)
+		message_send('&#128107; Выбери пол',id,KPol)
 		while True:
 			try:
 				for event in longpoll.listen():
@@ -84,18 +84,18 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 							message = event.object.text.lower()
 							if 'женский' in message:
 								WantPol = 'женский'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif 'мужской' in message:
 								WantPol = 'мужской'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif message == 'любой':
 								WantPol = 'любой'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							else:
-								message_send('Что-то введено не так! Используйте клавиатуру!',id,KPol)
+								message_send('&#9888; Что-то введено не так! Используйте клавиатуру!',id,KPol)
 
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
@@ -103,7 +103,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 				print(f"{id}_thread ошибка: {err}")
 	elif 'тип игры' in types:
 		KType = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Любой","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"Java Edition","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Bedrock Edition","payload":""},"color":"secondary"}]]})
-		message_send('Выберите тип игры',id,KType)
+		message_send('&#127918; Выбери тип игры',id,KType)
 		while True:
 			try:
 				for event in longpoll.listen():
@@ -113,18 +113,18 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 							message = event.object.text.lower()
 							if 'java' in message:
 								WantType = 'Java Edition'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif 'bedrock' in message:
 								WantType = 'Bedrock Edition'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif message == 'любой':
 								WantType = 'любой'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							else:
-								message_send('Что-то введено не так! Используйте клавиатуру!',id,KType)
+								message_send('&#9888; Что-то введено не так! Используйте клавиатуру!',id,KType)
 
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
@@ -132,7 +132,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 				print(f"{id}_thread ошибка: {err}")
 	elif 'версия' in types:
 		KVers = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Любая","payload":""},"color":"secondary"}]]})
-		message_send('Введите версию',id,KVers)
+		message_send('&#127918; Введи версию',id,KVers)
 		while True:
 			try:
 				for event in longpoll.listen():
@@ -142,14 +142,14 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 							message = event.object.text.lower()
 							if message in helper.versionsBedrock or message in helper.versionsJava:
 								WantVersion = message
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif message == 'любая':
 								WantVersion = 'любая'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							else:
-								message_send('Я не знаю такую версию!',id,KVers)
+								message_send('&#9888; Я не знаю такую версию!',id,KVers)
 
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
@@ -157,7 +157,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 				print(f"{id}_thread ошибка: {err}")
 	elif 'discord' in types:
 		KDis = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Всё равно","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Есть","payload":""},"color":"positive"}]]})
-		message_send('Выберите наличие дискорда',id,KDis)
+		message_send('&#128227; Выбери наличие дискорда',id,KDis)
 		while True:
 			try:
 				for event in longpoll.listen():
@@ -167,14 +167,14 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 							message = event.object.text.lower()
 							if message == 'всё равно':
 								WantDiscord = 'всё равно'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							elif message == 'есть':
 								WantDiscord = 'есть'
-								message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 							else:
-								message_send('Что-то введено не так! Используйте клавиатуру!',id,KDis)
+								message_send('&#9888; Что-то введено не так! Используйте клавиатуру!',id,KDis)
 			except requests.ReadTimeout as err:
 				print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 			except Exception as err:
@@ -182,7 +182,7 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 	elif 'лицензия' in types:
 		KLic = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Всё равно","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Есть","payload":""},"color":"positive"}]]})
 		if WantType == 'Java Edition':
-			message_send('Выберите наличие лицензии',id,KLic)
+			message_send('&#10004; Выбери наличие лицензии',id,KLic)
 			while True:
 				try:
 					for event in longpoll.listen():
@@ -192,20 +192,20 @@ def editConf(types,id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantW
 								message = event.object.text.lower()
 								if message == 'всё равно':
 									WantLicense = 'всё равно'
-									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 								elif message == 'есть':
 									WantLicense = 'есть'
-									message_send('Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+									message_send('&#9989; Сохранено!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 									return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 								else:
-									message_send('Что-то введено не так! Используйте клавиатуру!',id,KLic)
+									message_send('&#9888; Что-то введено не так! Используйте клавиатуру!',id,KLic)
 				except requests.ReadTimeout as err:
 					print(f"{id}_thread: Привышено время ожидания от сервера!\n")
 				except Exception as err:
 					print(f"{id}_thread ошибка: {err}")
 		else:
-			message_send('Тип игры должен быть Java Edition!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+			message_send('&#9888; Тип игры должен быть Java Edition!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 			return WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast
 WantLicense = 'всё равно'
 WantWozrast = 'любой'
@@ -248,7 +248,7 @@ def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 		cur.execute(f'SELECT * FROM `users` WHERE `user_id`!={id}')
 		last_users = cur.fetchall()
 	print(getCurrentTime(),f' Процесс {id}_thread запущен!\n')
-	message_send('Привет! Давай начнём!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+	message_send('&#128075; Привет! Давай начнём!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 	while True:
 		try:
 			for event in longpoll.listen():
@@ -292,10 +292,10 @@ def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 							message_send(data_send,id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast),att=avatar)
 						elif 'далее' in message:
 							if last_users == 'None':
-								message_send('Под данные характеристики никто не подходит',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+								message_send('&#128128; Под данные характеристики никто не подходит',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								continue
 							if not last_users:
-								message_send('Больше не осталось людей под данные характеристики, но ты можешь обнулить просмотры!',id,json.dumps({"buttons":[[{"action":{"type":"text","label":"Обнулить","payload":""},"color":"positive"}]],"inline":true}))
+								message_send('0&#8419; Больше не осталось людей под данные характеристики, но ты можешь обнулить просмотры!',id,json.dumps({"buttons":[[{"action":{"type":"text","label":"Обнулить","payload":""},"color":"positive"}]],"inline":true}))
 								deletem = message_send('&#13;',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 								vk.messages.delete(message_ids=deletem,delete_for_all=1)
 								continue
@@ -332,7 +332,7 @@ def restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 
 						elif 'обнулить' in message:
 							last_users = getUsers(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
-							message_send('Ты обнулил список просмотренных пользователей!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
+							message_send('&#9989; Ты обнулил список просмотренных пользователей!',id,keyGen(WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast))
 						else:
 							for command in ['возраст','пол','тип игры','версия','discord','лицензия']:
 								if command in message:
@@ -367,7 +367,7 @@ def registration(id,whereSit = 'typegame'):
 	print(getCurrentTime(),f' Процесс reg_{id}_thread запущен!\n')
 
 	KVersionGame = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Java Edition","payload":""},"color":"secondary"},{"action":{"type":"text","label":"Bedrock Edition","payload":""},"color":"secondary"}]]})
-	message_send('Какая у тебя версия игры? \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
+	message_send('&#127918; Какая у тебя версия игры? \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
 	while True:
 		try:
 			for event in longpoll.listen():
@@ -387,87 +387,87 @@ def registration(id,whereSit = 'typegame'):
 									KVersion = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"1.14","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.13","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.12","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.11","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"1.9","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.8","payload":""},"color":"secondary"},{"action":{"type":"text","label":"1.10","payload":""},"color":"secondary"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
 									checkVersion = helper.versionsBedrock
 
-								message_send('Продолжим...\nКакая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
+								message_send('&#127918; Какая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
 								whereSit = 'versiongame'
 							else:
-								message_send('Ответ не понятен! \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
+								message_send('&#9888; Ответ не понятен! \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
 						elif whereSit == 'versiongame':
 							if message == 'Назад':
 								whereSit = 'typegame'
-								message_send('Какая у тебя версия игры? \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
+								message_send('&#127918; Какая у тебя версия игры? \nПросьба, выбрать на клавиатуре!',id,keyb=KVersionGame)
 								continue
 							if message in checkVersion:
 								Version = message
-								message_send('Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
+								message_send('&#9999; Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
 								whereSit = 'nickname'
 							else:
-								message_send('Извини, я не знаю такую версию (PE не поддерживается!)',id,KVersion)
+								message_send('&#9888; Извини, я не знаю такую версию (PE не поддерживается!)',id,KVersion)
 
 						elif whereSit == 'nickname':
 							if message == 'Назад':
 								whereSit = 'versiongame'
-								message_send('Продолжим...\nКакая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
+								message_send('&#127918; Какая у тебя версия игры (уже другой вопрос)?\nОтвет написать самому или выбрать на клавиатуре!',id,KVersion)
 								continue
 							if checkNickname(message):
 								Nickname = message
 								Avatar = 'photo-194162460_457239037_4da5d43fea5750d796'
 								if TypeGame == 'Java Edition':
-									message_send('Подожди... Проверка лицензии и загрузка аватара....',id)
+									message_send('&#128564; Подожди... Проверка лицензии и загрузка аватара....',id)
 									Avatar = helper.AMain(Nickname)
 									if Avatar == 'No license':
-										message_send(f'Лицензия на никнейм <<{Nickname}>> отсутствует!',id,KBack)
+										message_send(f'&#9888; Лицензия на никнейм <<{Nickname}>> отсутствует!',id,KBack)
 										License = 'None'
 										Avatar = 'photo-194162460_457239037_4da5d43fea5750d796'
 									else:
 										License = 'True'
-										message_send('Лицензионный аватар установлен!',id,KBack)
+										message_send('&#9989; Лицензионный аватар установлен!',id,KBack)
 								else:
 									License = 'None'
-								message_send('Какой твой возраст?',id,KBack)
+								message_send('&#128286; Какой твой возраст?',id,KBack)
 								whereSit = 'years'
 							else:
-								message_send('Никнейм зарегистрирован!',id)
+								message_send('&#9888; Никнейм уже зарегистрирован!',id)
 						elif whereSit == 'years':
 							if message == 'Назад':
 								whereSit = 'nickname'
-								message_send('Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
+								message_send('&#9999; Какой твой никнейм в игре?\nЕсли ты имеешь лицензию, введи верный никнейм для отображения аватара!',id,KBack)
 								continue			
 							try:
 								Years = int(message)
 								if Years < 5 or Years > 60:
 									raise TypeError
-								message_send('Расскажи о себе',id,KBack)
+								message_send('&#9997; Расскажи о себе',id,KBack)
 								whereSit = 'about'
 							except:
-								message_send('Неверный возраст(',id,KBack)
+								message_send('&#9888; Неверный возраст(',id,KBack)
 						elif whereSit == 'about':
 							if message == 'Назад':
 								whereSit = 'years'
-								message_send('Какой твой возраст?',id,KBack)
+								message_send('&#128286; Какой твой возраст?',id,KBack)
 								continue														
 							if len(message) < 5 or len(message) > 100:
-								message_send('Должно быть меньше 100, но больше 5 символов',id,KBack)
+								message_send('&#9888; Должно быть меньше 100, но больше 5 символов',id,KBack)
 							else:
 								Data = message
 								KDiscord = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Секрет","payload":""},"color":"negative"},{"action":{"type":"text","label":"Отсутствует","payload":""},"color":"negative"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
-								message_send('Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
+								message_send('&#128222; Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
 								whereSit = 'discord'
 						elif whereSit == 'discord':
 							if message == 'Назад':
 								whereSit = 'about'
-								message_send('Расскажи о себе',id,KBack)
+								message_send('&#9997; Расскажи о себе',id,KBack)
 								continue
 							if '#' in message or (message == 'Секрет' or message == 'Отсутствует'):
 								Discord = message
 								KPol = json.dumps({"one_time":true,"buttons":[[{"action":{"type":"text","label":"Мужской","payload":""},"color":"primary"},{"action":{"type":"text","label":"Женский","payload":""},"color":"negative"}],[{"action":{"type":"text","label":"Назад","payload":""},"color":"secondary"}]]})
-								message_send('И на последок, какой твой пол?',id,KPol)
+								message_send('&#128107; И на последок, какой твой пол?',id,KPol)
 								whereSit = 'pol'
 							else:
-								message_send('А после решётки?(',id,KDiscord)
+								message_send('&#9888; А после решётки?(',id,KDiscord)
 						elif whereSit == 'pol':
 							if message == 'Назад':
 								whereSit = 'discord'
-								message_send('Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
+								message_send('&#128222; Discord. Какой твой никнейм (вместе с решёткой!)?',id,KDiscord)
 								continue
 							if message == 'Женский' or message=='Мужской':
 								Pol = message
@@ -475,10 +475,10 @@ def registration(id,whereSit = 'typegame'):
 								with con:
 									cur = con.cursor()
 									cur.execute('INSERT INTO users(user_id,nickname,years,versiongame,version,license,data,avatar,discord,pol) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(id,Nickname,Years,TypeGame,Version,License,Data,Avatar,Discord,Pol))
-								message_send('Регистрация успешна!',id)
+								message_send('&#9989; Регистрация успешна!',id)
 								restart(id,WantDiscord,WantLicense,WantPol,WantType,WantVersion,WantWozrast)
 							else:
-								message_send('Я не знаю такой пол!',id,KPol)
+								message_send('&#9888; Я не знаю такой пол!',id,KPol)
 
 		except requests.ReadTimeout as err:
 			print(f"reg{id}_thread: Привышено время ожидания от сервера!\n")
